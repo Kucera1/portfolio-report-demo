@@ -7,6 +7,8 @@ souboru. Každý týden je někdo ručně slepuje dohromady. Tahle ukázka to ud
 vyčistí, spočítá přehled (tržby, náklady, marže, co dochází na skladě, co bylo neobvyklé) a připraví Excel a PDF.
 Report ale **neodejde, dokud ho člověk nezkontroluje a neschválí.**
 
+Případová studie: [docs/pripadova-studie.md](docs/pripadova-studie.md).
+
 ![Ovládací panel](docs/panel.png)
 
 > Všechna data jsou **vymyšlená** (fiktivní e-shop s kávou „Ukázková pražírna“). Nic se skutečně neodesílá.
@@ -109,6 +111,8 @@ License: MIT (see [LICENSE](LICENSE))
 stock file, and someone stitches them together by hand every week. This demo does it in one click: it cleans
 the data, builds an overview (revenue, costs, margin, low stock, unusual swings) and prepares Excel and PDF
 files. The report is **not sent until a person has reviewed and approved it.**
+
+Case study (in Czech): [docs/pripadova-studie.md](docs/pripadova-studie.md).
 
 ![Control panel](docs/panel.png)
 
