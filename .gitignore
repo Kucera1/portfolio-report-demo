@@ -1,0 +1,20 @@
+# Virtuální prostředí
+.venv/
+
+# Simulované odeslání a generované výstupy (návrhy reportů, Excel a PDF)
+odeslano/
+vystupy/
+*.pdf
+tydenni_report_*.xlsx
+
+# Python cache a testy
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Pomocné soubory
+*.log
+*.stackdump
+*.egg-info/
+build/
+dist/
