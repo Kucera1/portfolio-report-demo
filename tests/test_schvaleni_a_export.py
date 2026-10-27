@@ -100,7 +100,8 @@ def test_excel_obsahuje_vsechny_listy_a_cisla(tmp_path):
     navrh = uloz_navrh(report, tmp_path / "navrhy")
     wb = load_workbook(navrh / "tydenni_report_2026-T41.xlsx")
     assert wb.sheetnames == ["Souhrn", "Top produkty", "Nízká zásoba", "Výkyvy", "Denní tržby",
-                             "Náklady podle kategorií", "Úpravy dat (souhrn)", "Úpravy dat (detail)"]
+                             "Náklady podle kategorií", "Úpravy dat (souhrn)", "Úpravy dat (detail)",
+                             "Nejprodávanější zboží", "Pomalu se točící zboží"]
     souhrn = wb["Souhrn"]
     assert souhrn["A5"].value == "Tržby (bez DPH)"
     assert souhrn["B5"].value == pytest.approx(report.ukazatele["trzby"])

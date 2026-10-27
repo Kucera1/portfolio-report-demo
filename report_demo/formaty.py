@@ -30,6 +30,13 @@ def kc_znamenko(hodnota, desetinna: int = 0) -> str:
     return text if text == "–" or text.startswith("-") else f"+{text}"
 
 
+def tydny(hodnota) -> str:
+    """Na kolik týdnů vydrží zásoba: '12,5', bez prodeje 'neprodává se'."""
+    if not _chybi(hodnota) and math.isinf(hodnota):
+        return "neprodává se"
+    return cislo(hodnota, 1)
+
+
 def procento(podil, desetinna: int = 1, znamenko: bool = False) -> str:
     """0.125 -> '12,5 %'; se znaménkem '+12,5 %'."""
     if _chybi(podil) or math.isinf(podil):

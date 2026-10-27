@@ -36,6 +36,8 @@ FORMATY_SLOUPCU = {
     "Prodej za den (ø 4 týdny)": F_DESETINY, "Vystačí na dní": F_DESETINY,
     "Podíl na tržbách": F_PCT, "Změna proti minulému týdnu": F_ZMENA, "Odchylka": F_ZMENA,
     "Den": F_DATUM,
+    "Prodej za týden (ks)": F_DESETINY, "Zásoba vydrží (týdnů)": F_DESETINY, "Běžná cena": F_KC,
+    "Zisk na kus": '#,##0.00 "Kč"', "Marže": F_PCT, "Prostor pro slevu": F_PCT,
 }
 FORMATY_UKAZATELU = {"kc": F_KC, "ks": F_KS, "pct": F_PCT}
 
@@ -76,6 +78,10 @@ def export_excel(report: TydenniReport, cesta: Path) -> Path:
         "Náklady podle kategorií": report.naklady_kategorie,
         "Úpravy dat (souhrn)": report.log_souhrn,
         "Úpravy dat (detail)": report.log_detail,
+        "Nejprodávanější zboží": report.sortiment.nejprodavanejsi,
+        "Pomalu se točící zboží": report.sortiment.pomale.assign(**{
+            "Zásoba vydrží (týdnů)": [("neprodává se" if math.isinf(v) else v)
+                                      for v in report.sortiment.pomale["Zásoba vydrží (týdnů)"]]}),
     }
     with pd.ExcelWriter(cesta, engine="openpyxl") as zapis:
         souhrn.drop(columns="typ").to_excel(zapis, sheet_name="Souhrn", index=False, startrow=3)
@@ -114,6 +120,11 @@ def export_excel(report: TydenniReport, cesta: Path) -> Path:
         ws.column_dimensions["A"].width = 44
         for nazev in listy:
             _uprav_list(zapis.sheets[nazev])
+        ws = zapis.sheets["Pomalu se točící zboží"]
+        radek = ws.max_row + 2
+        for veta in report.sortiment.poznamky:
+            ws.cell(row=radek, column=1, value=veta)
+            radek += 1
     return cesta
 
 
@@ -174,6 +185,42 @@ def _tabulka(pdf: FPDF, hlavicka: list[str], radky: list[list[str]], sirky: tupl
             r = tabulka.row()
             for hodnota in radek:
                 r.cell(hodnota)
+
+
+def _sekce_sortimentu(pdf: FPDF, report: TydenniReport) -> None:
+    sortiment = report.sortiment
+    _nadpis(pdf, "Co se prodává nejvíc a nejméně", min_vyska=70)
+    pdf.set_font("DejaVu", size=8)
+    pdf.multi_cell(0, 4.5, f"Za posledních {(sortiment.do - sortiment.od).days // 7 + 1} týdnů "
+                           f"({formaty.datum(sortiment.od)} – {formaty.datum(sortiment.do)}).",
+                   new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.cell(0, 7, "Nejprodávanější zboží", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("DejaVu", size=9)
+    _tabulka(pdf, ["Produkt", "Prodáno ks", "Tržby", "Prodej za týden"],
+             [[r.Produkt, formaty.cislo(r[2]), formaty.kc(r.Tržby), formaty.cislo(r[4], 1)]
+              for r in sortiment.nejprodavanejsi.itertuples(index=False)],
+             (75, 30, 40, 35), ("LEFT", "RIGHT", "RIGHT", "RIGHT"))
+    if pdf.will_page_break(40):
+        pdf.add_page()
+    pdf.ln(2)
+    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.cell(0, 7, "Pomalu se točící zboží", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("DejaVu", size=8)
+    if sortiment.pomale.empty:
+        pdf.cell(0, 6, "Žádné zboží se netočí pomalu.", new_x="LMARGIN", new_y="NEXT")
+    else:
+        _tabulka(pdf, ["Produkt", "Skladem", "Prodej za týden", "Vydrží týdnů", "Marže", "Prostor pro slevu",
+                       "Návrh (rozhoduje majitel)"],
+                 [[r.Produkt, formaty.cislo(r[3]), formaty.cislo(r[4], 1), formaty.tydny(r[5]),
+                   formaty.procento(r.Marže, 0), formaty.procento(r[9], 0), r[10]]
+                  for r in sortiment.pomale.itertuples(index=False)],
+                 (38, 16, 18, 22, 14, 20, 52), ("LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "LEFT"))
+    pdf.ln(1)
+    pdf.set_font("DejaVu", size=7.5)
+    for veta in sortiment.poznamky[1:]:
+        pdf.multi_cell(0, 4, f"• {veta}", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("DejaVu", size=9)
 
 
 def export_pdf(report: TydenniReport, cesta: Path) -> Path:
@@ -237,6 +284,8 @@ def export_pdf(report: TydenniReport, cesta: Path) -> Path:
                  [[r.Co, r.Kdy, formaty.kc(r.Skutečnost), formaty.kc(r[3]), r.Poznámka]
                   for r in report.vykyvy.itertuples(index=False)],
                  (40, 20, 25, 25, 70), ("LEFT", "LEFT", "RIGHT", "RIGHT", "LEFT"))
+
+    _sekce_sortimentu(pdf, report)
 
     _nadpis(pdf, "Poznámky k datům")
     pdf.set_font("DejaVu", size=8)

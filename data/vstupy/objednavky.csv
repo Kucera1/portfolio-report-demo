@@ -65,6 +65,7 @@
 2600041;04.08.2026 13:36;KAV-BRA-250;Brazílie Santos 250 g;1;219,00;Vyřízeno
 2600041;04.08.2026 13:36;KAV-ETI-25O;Etiopie Yirgacheffe 250 g;1;289,00;vyřízeno
 2600042;05.08.2026 07:54;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
+2600042;05.08.2026 07:54;PRI-KRA-DAR;Dárková krabička;1;99,00;Vyřízeno
 2600042;05.08.2026 07:54;KAV-KOL-1000;Kolumbie Huila 1 kg;3;899,00;Vyřízeno
 2600043;05.08.2026 08:59;KAV-BRA-250;Brazílie Santos 250 g;1;219,00;Vyřízeno
 2600044;05.08.2026 17:48;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
@@ -489,6 +490,7 @@
 2600321;17.08.2026 09:34;KAV-KOL-1000;Kolumbie Huila 1 kg;2;899,00;Vyrizeno 
 2600321;17.08.2026 09:34;kav-bra-1000;Brazílie Santos 1 kg;1;749,00;Vyrizeno 
 2600322;17.08.2026 13:16;PRI-V60;Dripper V60 keramický;1;549,00;Vyřízeno
+2600322;17.08.2026 13:16;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600322;17.08.2026 13:16;KAV-ETI-1000;Etiopie Yirgacheffe 1 kg;1;990,00;VYRIZENO
 2600323;17.08.2026 07:49;kav-dec-250;Bezkofeinová Mexiko 250 g;1;279,00;Vyřízeno
 2600324;17.08.2026 14:05;kav-esp-1000;Espresso směs Demo 1 kg;2;799,00;Vyřízeno
@@ -519,6 +521,7 @@
 2600341;18.08.2026 09:12;kav-dec-250;Bezkofeinová Mexiko 250 g;2;279,00;Vyřízeno
 2600342;18.08.2026 18:38;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
 2600342;18.08.2026 18:38;PRI-V60;Dripper V60 keramický;2;549,00;Vyřízeno
+2600342;18.08.2026 18:38;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600343;18.08.2026 18:53;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;VYRIZENO
 2600344;18.08.2026 13:21;KAV-KEN-250;Keňa AA 250 g;3;319,00;Vyřízeno
 2600345;18.08.2026 16:52;KAV-KOL-1000;Kolumbie Huila 1 kg;2;899,00;Vyřízeno
@@ -574,6 +577,7 @@
 2600380;19.08.2026 10:03;KAV-ETI-1000;Etiopie Yirgacheffe 1 kg;2;990,00;Vyřízeno
 2600380;19.08.2026 10:03; KAV-KOL-250 ;Kolumbie Huila 250 g;3;259,00;Vyřízeno
 2600381;20.08.2026 21:35;KAV-ETI-1000;Etiopie Yirgacheffe 1 kg;1;990,00;Vyřízeno
+2600381;20.08.2026 21:35;PRI-SIR-KAR;Kávový sirup karamel 250 ml;1;189,00;Vyřízeno
 2600381;20.08.2026 21:35;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
 2600382;20.08.2026 16:27;KAV-BRA-250;Brazílie Santos 250 g;2;219,00;Vyřízeno
 2600383;20.08.2026 13:12;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
@@ -639,6 +643,7 @@
 2600421;21.08.2026 13:31;KAV-ETI-25O;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
 2600422;2026-08-21 10:01:00;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;Vyřízeno
 2600423;21.08.2026 13:24;PRI-V60;Dripper V60 keramický;3;549,00;Vyřízeno
+2600423;21.08.2026 13:24;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600424;21.08.2026 19:57;KAV-KEN-250;Keňa AA 250 g;1;319,00;Vyřízeno
 2600425;21.08.2026 10:28;KAV-BRA-1000;Brazílie Santos 1 kg;1;749,00;Vyrizeno 
 2600426;21.08.2026 12:41;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
@@ -718,6 +723,7 @@
 2600478;23.08.2026 12:11;KAV-BRA-1000;Brazílie Santos 1 kg;1;749,00;Stornováno
 2600479;23.08.2026 10:06;PRI-MLY-RUC;Ruční mlýnek na kávu;2;1290,00;Vyřízeno
 2600479;23.08.2026 10:06;PRI-V60;Dripper V60 keramický;1;549,00;Vyřízeno
+2600479;23.08.2026 10:06;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600480;24.08.2026 08:20;KAV-KOL-1000;Kolumbie Huila 1 kg;1;899,00;vyřízeno
 2600480;24.08.2026 08:20;KAV-KOL-250;Kolumbie Huila 250 g;2;259,00;Vyřízeno
 2600481;24.08.2026 11:22;KAV-BRA-250;Brazílie Santos 250 g;2;219,00;Vyrizeno 
@@ -758,6 +764,7 @@
 2600502;25.08.2026 07:29;KAV-BRA-250;Brazílie Santos 250 g;2;219,00;Vyřízeno
 2600503;25.08.2026 20:28;KAV-KEN-250;Keňa AA 250 g;1;319,00;Vyřízeno
 2600504;25.08.2026 10:54;PRI-V60;Dripper V60 keramický;2;549,00;Vyřízeno
+2600504;25.08.2026 10:54;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600504;25.08.2026 10:54;kav-esp-1000;Espresso směs Demo 1 kg;3;799,00;Vyřízeno
 2600505;25.08.2026 22:28;KAV-KEN-250;Keňa AA 250 g;1;319,00;Vyřízeno
 2600505;25.08.2026 22:28;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
@@ -780,6 +787,7 @@
 2600519;25.08.2026 08:44;kav-kol-1000;Kolumbie Huila 1 kg;2;899,00;Vyřízeno
 2600520;25.08.2026 12:13;KAV-BRA-250;Brazílie Santos 250 g;1;219,00;Vyřízeno
 2600520;25.08.2026 12:13;PRI-V60;Dripper V60 keramický;1;549,00;Vyřízeno
+2600520;25.08.2026 12:13;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600520;25.08.2026 12:13;KAV-BRA-1000;Brazílie Santos 1 kg;2;749,00;Vyřízeno
 2600521;25.08.2026 11:56;KAV-BRA-1000;Brazílie Santos 1 kg;1;749,00;Vyřízeno
 2600521;25.08.2026 11:56;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;VYRIZENO
@@ -866,6 +874,7 @@
 2600575;28.08.2026 10:04;KAV-ETI-250;Etiopie Yirgacheffe 250 g;3;289,00;Vyřízeno
 2600576;28.08.2026 14:12;KAV-KOL-250;Kolumbie Huila 250 g;1;259,00;Vyřízeno
 2600577;28.08.2026 09:03;PRI-V60;Dripper V60 keramický;1;549,00;Vyrizeno 
+2600577;28.08.2026 09:03;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600577;28.08.2026 09:03;KAV-KOL-1000;Kolumbie Huila 1 kg;1;899,00;Vyřízeno
 2600577;28.08.2026 09:03;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
 2600578;28.08.2026 08:42;PRI-FIL-100;Papírové filtry 100 ks;2;129,00;Vyřízeno
@@ -989,6 +998,7 @@
 2600658;30.08.2026 21:00;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;Vyřízeno
 2600659;30.08.2026 20:39;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;Vyřízeno
 2600660;31.08.2026 20:54;KAV-BRA-250;Brazílie Santos 250 g;1;219,00;Vyřízeno
+2600660;31.08.2026 20:54;PRI-SIR-KAR;Kávový sirup karamel 250 ml;1;189,00;Vyřízeno
 2600660;31.08.2026 20:54;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
 2600661;31.08.2026 15:56;KAV-ETI-250;Etiopie Yirgacheffe 250 g;2;289,00;Vyřízeno
 2600662;31.08.2026 18:21;KAV-ESP-1000;Espresso směs Demo 1 kg;2;799,00;Vyřízeno
@@ -1087,6 +1097,7 @@
 2600727;03.09.2026 14:21;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
 2600727;03.09.2026 14:21;KAV-ESP-1000;Espresso směs Demo 1 kg;2;799,00;Vyřízeno
 2600727;03.09.2026 14:21;PRI-V60;Dripper V60 keramický;2;549,00;vyřízeno
+2600727;03.09.2026 14:21;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600728;03.09.2026 13:08;KAV-BRA-250;Brazílie Santos 250 g;3;219,00;VYRIZENO
 2600728;03.09.2026 13:08;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;VYRIZENO
 2600729;03.09.2026 14:56;KAV-ETI-1000;Etiopie Yirgacheffe 1 kg;;990,00;Vyřízeno
@@ -1106,6 +1117,7 @@
 2600739;03.09.2026 20:31;KAV-ETI-250;Etiopie Yirgacheffe 250 g;2;289,00;Vyřízeno
 2600739;03.09.2026 20:31;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;Vyřízeno
 2600740;03.09.2026 08:33;PRI-V60;Dripper V60 keramický;1;549,00;Vyřízeno
+2600740;03.09.2026 08:33;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600741;03.09.2026 18:39;KAV-ETI-1000;Etiopie Yirgacheffe 1 kg;1;990,00;VYRIZENO
 2600742;03.09.2026 14:02;kav-ken-250;Keňa AA 250 g;2;319,00;Vyrizeno 
 2600743;03.09.2026 11:35;PRI-FIL-100;Papírové filtry 100 ks;1;129,00;Vyřízeno
@@ -1150,6 +1162,7 @@
 2600766;04.09.2026 07:57;KAV-DEC-250;Bezkofeinová Mexiko 250 g;2;279,00;Vyřízeno
 2600766;04.09.2026 07:57;KAV-ESP-1000;Espresso směs Demo 1 kg;1;799,00;Vyřízeno
 2600767;04.09.2026 10:15;pri-v60;Dripper V60 keramický;1;549,00;Vyřízeno
+2600767;04.09.2026 10:15;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600768;04.09.2026 14:01;KAV-KOL-1000;Kolumbie Huila 1 kg;3;899,00;Vyřízeno
 2600768;04.09.2026 14:01;KAV-KOL-250;Kolumbie Huila 250 g;2;259,00;Vyřízeno
 2600769;04.09.2026 10:36;PRI-MLY-RUC;Ruční mlýnek na kávu;1;1290,00;Vyřízeno
@@ -1194,6 +1207,7 @@
 2600792;05.09.2026 14:03;PRI-FIL-100;Papírové filtry 100 ks;3;129,00;Vyřízeno
 2600792;05.09.2026 14:03;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
 2600793;05.09.2026 17:51;pri-v60;Dripper V60 keramický;1;549,00;Vyrizeno 
+2600793;05.09.2026 17:51;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600794;05.09.2026 18:10;KAV-KEN-250;Keňa AA 250 g;1;319,00;Vyřízeno
 2600795;05.09.2026 18:12;KAV-KOL-1000;Kolumbie Huila 1 kg;1;899,00;Vyřízeno
 2600796;05.09.2026 18:24;KAV-KEN-250;Keňa AA 250 g;3;319,00;Vyřízeno
@@ -1239,6 +1253,7 @@
 2600823;06.09.2026 20:01;KAV-ETI-250;Etiopie Yirgacheffe 250 g;1;289,00;Vyřízeno
 2600823;06.09.2026 20:01;KAV-DEC-250;Bezkofeinová Mexiko 250 g;1;279,00;Vyřízeno
 2600824;06.09.2026 18:19;PRI-V60;Dripper V60 keramický;2;549,00;Vyřízeno
+2600824;06.09.2026 18:19;PRI-SAL-200;Keramický šálek 200 ml;1;249,00;Vyřízeno
 2600825;06.09.2026 18:06;PRI-V60;Dripper V60 keramický;1;549,00;VYRIZENO
 2600826;06.09.2026 11:51;PRI-FIL-100;Papírové filtry 100 ks;2;129,00;Vyrizeno 
 2600827;06.09.2026 15:28;KAV-BRA-250;Brazílie Santos 250 g;3;219,00;Vyřízeno

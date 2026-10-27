@@ -22,8 +22,10 @@ Případová studie: [docs/pripadova-studie.md](docs/pripadova-studie.md).
 | Log změn | Každá úprava je zapsaná: zdroj, číslo řádku v původním souboru, původní a nová hodnota, důvod. Je vidět v panelu i v Excelu. |
 | Report | Tržby, nákupní cena zboží, hrubá marže, provozní náklady (zvlášť pravidelné měsíční platby – mzdy, nájem, energie, software) a zisk i zisk bez měsíčních plateb (proti minulému týdnu), rozklad změny zisku (kolik udělaly měsíční platby, marketing a ostatní), top 5 produktů, zboží k doobjednání (s doporučeným množstvím), nezvyklé výkyvy tržeb a nákladů a pár vět „hlavních zjištění“. |
 | Schválení | Report se uloží jako **návrh**. Teprve tlačítko **Schválit a odeslat** ho „odešle“ – v ukázce se jen zkopíruje do složky `odeslano/` spolu s textem zprávy a záznamem do deníku. Návrh jde i zahodit. Odeslat lze jen jednou. |
-| Export | Excel (8 listů, česká čísla a měna) a PDF (A4, graf tržeb po dnech, tabulky). |
-| Testy | 30 testů (pytest) pro čištění, výpočty, schvalování a exporty. |
+| Export | Excel (10 listů, česká čísla a měna) a PDF (A4, graf tržeb po dnech, tabulky). |
+| Testy | 40 testů (pytest) pro čištění, výpočty, schvalování a exporty. |
+
+- **Co se prodává nejvíc a nejméně:** nejprodávanější a pomalu se točící zboží, na kolik týdnů vydrží zásoba, prostor pro slevu a doporučení (zvaž slevu, vyřazení nebo balíček) – rozhoduje majitel; v panelu i kalkulačka slevy.
 
 ## Jak spustit (Windows)
 
@@ -36,8 +38,9 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Panel se otevře v prohlížeči. Postup: vyberte týden → **Vygenerovat report** → zkontrolujte náhled →
-**Schválit a odeslat**.
+Příště už stačí **dvojklik na `spustit_panel.bat`** – panel se sám otevře v prohlížeči na adrese
+http://localhost:8501. (Po spuštění přes `streamlit run app.py` otevřete adresu, kterou příkaz vypíše.)
+Postup v panelu: vyberte týden → **Vygenerovat report** → zkontrolujte náhled → **Schválit a odeslat**.
 
 Další příkazy:
 
@@ -86,6 +89,7 @@ Na macOS/Linuxu místo `py -3.14` použijte `python3` a místo `.venv\Scripts\ac
 
 ```
 app.py                      ovládací panel (Streamlit)
+spustit_panel.bat           spuštění panelu dvojklikem (Windows)
 report_demo/generator.py    generátor syntetických dat
 report_demo/nacitani.py     načtení tří zdrojů
 report_demo/cisteni.py      čištění a log změn
@@ -130,8 +134,9 @@ Case study (in Czech): [docs/pripadova-studie.md](docs/pripadova-studie.md).
 - **Approval step:** the report is saved as a **draft**; only **Approve and send** "sends" it (in the demo:
   copies files to `odeslano/` with the message text and a log entry). A draft can be discarded; it can be sent
   only once.
-- **Exports:** Excel (8 sheets, Czech number formats) and PDF (A4, daily revenue chart, tables).
-- **Tests:** 30 pytest tests for cleaning, calculations, approval and exports.
+- **Exports:** Excel (10 sheets, Czech number formats) and PDF (A4, daily revenue chart, tables).
+- **Tests:** 40 pytest tests for cleaning, calculations, approval and exports.
+- **Best and slow sellers:** best-selling and slow-moving products, how many weeks the stock will last, discount headroom and rule-based suggestions without numbers (consider a discount, removal or a bundle) – the owner decides; the panel also has a discount calculator.
 
 The user interface and outputs are in Czech, because the target customer is a Czech small business.
 
@@ -146,7 +151,8 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Tests: `python -m pytest`. Regenerate the synthetic data: `python -m report_demo.generator`.
+After the first setup, just **double-click `spustit_panel.bat`** – the panel opens in the browser at
+http://localhost:8501. Tests: `python -m pytest`. Regenerate the synthetic data: `python -m report_demo.generator`.
 
 ## What is synthetic
 

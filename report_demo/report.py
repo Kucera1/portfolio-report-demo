@@ -8,6 +8,7 @@ import pandas as pd
 
 from . import formaty
 from .nacitani import VycistenaData
+from .sortiment import Sortiment, analyzuj_sortiment
 
 # Kategorie, které se mění týden od týdne. Měsíční platby (nájem, mzdy, energie,
 # software) by jinak „vyskakovaly“ jako výkyv pokaždé, když jsou zaplaceny.
@@ -56,6 +57,7 @@ class TydenniReport(NamedTuple):
     sklad_ke_dni: date
     zjisteni: list
     poznamky: list
+    sortiment: Sortiment
 
 
 def _obdobi(df: pd.DataFrame, sloupec: str, od: date, do: date) -> pd.DataFrame:
@@ -327,6 +329,7 @@ def spocitej_report(data: VycistenaData, od: date) -> TydenniReport:
         od=od, do=do, ukazatele=ukazatele, ukazatele_minule=minule, top_produkty=top,
         nizka_zasoba=zasoba, vykyvy=vykyvy_tab, denni_trzby=denni_trzby(data, od, do),
         naklady_kategorie=naklady_podle_kategorii(data, od, do), rozklad_zisku=rozklad, veta_rozkladu=veta,
+        sortiment=analyzuj_sortiment(data.objednavky, data.sklad, data.sklad_ke_dni),
         log_souhrn=data.log.souhrn(), log_detail=data.log.tabulka(), sklad_ke_dni=data.sklad_ke_dni,
         zjisteni=hlavni_zjisteni(ukazatele, minule, top, zasoba, vykyvy_tab, veta), poznamky=poznamky,
     )

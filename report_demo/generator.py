@@ -33,13 +33,37 @@ PRODUKTY = [
     ("KAV-KOL-1000", "Kolumbie Huila 1 kg", 899, 470, 0.05, 140, 30),
     ("KAV-BRA-250", "Brazílie Santos 250 g", 219, 110, 0.13, 380, 60),
     ("KAV-BRA-1000", "Brazílie Santos 1 kg", 749, 380, 0.07, 200, 30),
-    ("KAV-KEN-250", "Keňa AA 250 g", 319, 170, 0.08, 250, 40),
+    ("KAV-KEN-250", "Keňa AA 250 g", 319, 170, 0.08, 900, 40),     # předzásobeno – točí se pomalu
     ("KAV-ESP-1000", "Espresso směs Demo 1 kg", 799, 400, 0.12, 330, 50),
     ("KAV-DEC-250", "Bezkofeinová Mexiko 250 g", 279, 145, 0.06, 160, 30),
     ("PRI-V60", "Dripper V60 keramický", 549, 260, 0.04, 110, 20),
     ("PRI-MLY-RUC", "Ruční mlýnek na kávu", 1290, 690, 0.02, 4, 6),
     ("PRI-FIL-100", "Papírové filtry 100 ks", 129, 45, 0.08, 45, 60),
 ]
+
+# Doplňkové zboží, které se prodává jen občas (pro přehled pomalu se točícího zboží).
+# kód, název, prodejní cena, nákupní cena, skladem, minimální zásoba
+DOPLNKOVE_PRODUKTY = [
+    ("PRI-SAL-200", "Keramický šálek 200 ml", 249, 110, 140, 10),
+    ("PRI-SIR-KAR", "Kávový sirup karamel 250 ml", 189, 150, 60, 10),
+    ("PRI-KRA-DAR", "Dárková krabička", 99, 40, 120, 20),
+]
+# Šálek se kupuje hlavně spolu s dripperem – z objednávek pak jde poznat vhodný balíček.
+SALEK_K_DRIPPERU = 0.35
+# Doplňkové zboží se prodávalo jen do 6. 9.; týdny 37–41 (a tedy čísla v ukázkovém
+# reportu za týden 41 a jeho srovnání) zůstávají beze změny.
+DOPLNKY_OD = date(2026, 8, 17)
+DOPLNKY_DO = date(2026, 9, 7)        # bez tohoto dne
+SIRUP_DNY = [date(2026, 8, 20), date(2026, 8, 31)]
+KRABICKA_DNY = [date(2026, 8, 5)]
+
+# Náklady na balení a vyřízení jednoho kusu (Kč). Platební poplatek v % je v nastavení sortimentu.
+POPLATKY_KS = {
+    "KAV-ETI-250": 12, "KAV-ETI-1000": 18, "KAV-KOL-250": 12, "KAV-KOL-1000": 18,
+    "KAV-BRA-250": 12, "KAV-BRA-1000": 18, "KAV-KEN-250": 12, "KAV-ESP-1000": 18,
+    "KAV-DEC-250": 12, "PRI-V60": 20, "PRI-MLY-RUC": 25, "PRI-FIL-100": 8,
+    "PRI-SAL-200": 25, "PRI-SIR-KAR": 15, "PRI-KRA-DAR": 6,
+}
 
 VARIANTY_KATEGORII = {
     "Doprava": ["Doprava", "doprava", "Dopravaa", " Doprava ", "Poštovné"],
@@ -104,12 +128,40 @@ def vygeneruj_objednavky(rng: np.random.Generator) -> list[list[str]]:
         neupravene.append([cislo_obj, datum_text, kod, nazev, mnozstvi, _cena_text(cena), stav])
 
     # Opakovaný export: některé řádky jsou v souboru dvakrát za sebou.
+    # Doplňkové položky se přidají za řádek objednávky, ke které patří (vlastní generátor
+    # náhodných čísel, takže se ostatní data nezmění).
+    doplnky = _doplnkove_polozky(radky, neupravene)
     vysledek = []
-    for radek in neupravene:
+    for i, radek in enumerate(neupravene):
         vysledek.append(radek)
         if rng.random() < 0.015:
             vysledek.append(list(radek))
+        vysledek.extend(doplnky.get(i, []))
     return vysledek
+
+
+def _doplnkove_polozky(radky: list, neupravene: list) -> dict[int, list[list[str]]]:
+    rng = np.random.default_rng(SEED + 1)
+    doplnky: dict[int, list[list[str]]] = {}
+    prvni_v_den: dict[date, int] = {}
+    for i, (_, cas, kod, _, _, _, stav) in enumerate(radky):
+        if stav == "Vyřízeno":
+            prvni_v_den.setdefault(cas.date(), i)
+
+    def pridej(i: int, kod: str) -> None:
+        _, nazev, cena = next(p for p in DOPLNKOVE_PRODUKTY if p[0] == kod)[:3]
+        cislo_obj, datum_text = neupravene[i][:2]
+        doplnky.setdefault(i, []).append([cislo_obj, datum_text, kod, nazev, "1", _cena_text(cena), "Vyřízeno"])
+
+    for i, (_, cas, kod, _, _, _, stav) in enumerate(radky):
+        if (kod == "PRI-V60" and stav == "Vyřízeno" and DOPLNKY_OD <= cas.date() < DOPLNKY_DO
+                and rng.random() < SALEK_K_DRIPPERU):
+            pridej(i, "PRI-SAL-200")
+    for den in SIRUP_DNY:
+        pridej(prvni_v_den[den], "PRI-SIR-KAR")
+    for den in KRABICKA_DNY:
+        pridej(prvni_v_den[den], "PRI-KRA-DAR")
+    return doplnky
 
 
 def vygeneruj_naklady(rng: np.random.Generator) -> list[tuple[date, str, str, float]]:
@@ -197,15 +249,18 @@ def uloz_naklady(cesta: Path, rng: np.random.Generator) -> None:
 
 def uloz_sklad(cesta: Path) -> None:
     radky = []
-    for kod, nazev, _, nakup, _, skladem, minimum in PRODUKTY:
-        radky.append([kod, nazev, str(skladem), str(minimum), _cena_text(nakup).removesuffix(",00")])
+    polozky = [(kod, nazev, cena, nakup, skladem, minimum)
+               for kod, nazev, cena, nakup, _, skladem, minimum in PRODUKTY] + DOPLNKOVE_PRODUKTY
+    for kod, nazev, cena, nakup, skladem, minimum in polozky:
+        radky.append([kod, nazev, str(skladem), str(minimum), _cena_text(nakup).removesuffix(",00"),
+                      str(cena), str(POPLATKY_KS[kod])])
     radky[4][0] = " kav-bra-250"          # malá písmena a mezera
     radky[9][2] = "-2"                    # chyba inventury
     radky[6][3] = ""                      # chybí minimální zásoba
-    radky.insert(2, ["KAV-KOL-250", "Kolumbie Huila 250 g", "380", "60", "135,50"])  # starší řádek
+    radky.insert(2, ["KAV-KOL-250", "Kolumbie Huila 250 g", "380", "60", "135,50", "259", "12"])  # starší řádek
     with open(cesta, "w", newline="", encoding="utf-8") as f:
         zapis = csv.writer(f)
-        zapis.writerow(["sku", "nazev", "skladem_ks", "min_zasoba", "nakupni_cena"])
+        zapis.writerow(["sku", "nazev", "skladem_ks", "min_zasoba", "nakupni_cena", "prodejni_cena", "poplatek_ks"])
         zapis.writerows(radky)
 
 

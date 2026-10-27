@@ -1,14 +1,17 @@
-sku,nazev,skladem_ks,min_zasoba,nakupni_cena
-KAV-ETI-250,Etiopie Yirgacheffe 250 g,60,80,150
-KAV-ETI-1000,Etiopie Yirgacheffe 1 kg,120,30,520
-KAV-KOL-250,Kolumbie Huila 250 g,380,60,"135,50"
-KAV-KOL-250,Kolumbie Huila 250 g,400,60,"135,50"
-KAV-KOL-1000,Kolumbie Huila 1 kg,140,30,470
- kav-bra-250,Brazílie Santos 250 g,380,60,110
-KAV-BRA-1000,Brazílie Santos 1 kg,200,30,380
-KAV-KEN-250,Keňa AA 250 g,250,,170
-KAV-ESP-1000,Espresso směs Demo 1 kg,330,50,400
-KAV-DEC-250,Bezkofeinová Mexiko 250 g,160,30,145
-PRI-V60,Dripper V60 keramický,-2,20,260
-PRI-MLY-RUC,Ruční mlýnek na kávu,4,6,690
-PRI-FIL-100,Papírové filtry 100 ks,45,60,45
+sku,nazev,skladem_ks,min_zasoba,nakupni_cena,prodejni_cena,poplatek_ks
+KAV-ETI-250,Etiopie Yirgacheffe 250 g,60,80,150,289,12
+KAV-ETI-1000,Etiopie Yirgacheffe 1 kg,120,30,520,990,18
+KAV-KOL-250,Kolumbie Huila 250 g,380,60,"135,50",259,12
+KAV-KOL-250,Kolumbie Huila 250 g,400,60,"135,50",259,12
+KAV-KOL-1000,Kolumbie Huila 1 kg,140,30,470,899,18
+ kav-bra-250,Brazílie Santos 250 g,380,60,110,219,12
+KAV-BRA-1000,Brazílie Santos 1 kg,200,30,380,749,18
+KAV-KEN-250,Keňa AA 250 g,900,,170,319,12
+KAV-ESP-1000,Espresso směs Demo 1 kg,330,50,400,799,18
+KAV-DEC-250,Bezkofeinová Mexiko 250 g,160,30,145,279,12
+PRI-V60,Dripper V60 keramický,-2,20,260,549,20
+PRI-MLY-RUC,Ruční mlýnek na kávu,4,6,690,1290,25
+PRI-FIL-100,Papírové filtry 100 ks,45,60,45,129,8
+PRI-SAL-200,Keramický šálek 200 ml,140,10,110,249,25
+PRI-SIR-KAR,Kávový sirup karamel 250 ml,60,10,150,189,15
+PRI-KRA-DAR,Dárková krabička,120,20,40,99,6

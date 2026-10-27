@@ -56,6 +56,8 @@ SLOUPCE_SKLADU = {
     "min_zasoba": "min_zasoba",
     "nakupni_cena": "nakupni_cena",
 }
+# Volitelné sloupce skladu: běžná prodejní cena a náklady na balení a vyřízení jednoho kusu.
+VOLITELNE_SLOUPCE_SKLADU = {"prodejni_cena": "prodejni_cena", "poplatek_ks": "poplatek_ks"}
 
 
 class LogZmen:
@@ -298,7 +300,8 @@ def vycisti_naklady(surova: pd.DataFrame, log: LogZmen, zdroj: str = "Náklady")
 
 def vycisti_sklad(surova: pd.DataFrame, log: LogZmen, zdroj: str = "Sklad") -> pd.DataFrame:
     polozky: dict[str, dict] = {}
-    for z in _pripravit(surova, SLOUPCE_SKLADU):
+    sloupce_souboru = {str(c).strip() for c in surova.columns}
+    for z in _pripravit(surova, SLOUPCE_SKLADU | VOLITELNE_SLOUPCE_SKLADU):
         radek = z["radek"]
 
         def zmena(sloupec, puvodni, nova, uprava):
@@ -330,14 +333,24 @@ def vycisti_sklad(surova: pd.DataFrame, log: LogZmen, zdroj: str = "Sklad") -> p
         if minimum is None:
             zmena("min_zasoba", "", VYCHOZI_MIN_ZASOBA, "chybí minimální zásoba – použita výchozí")
             minimum = VYCHOZI_MIN_ZASOBA
+        prodejni = parse_castka(z["prodejni_cena"])
+        if prodejni is None and "prodejni_cena" in sloupce_souboru:
+            zmena("prodejni_cena", "", "", "chybí prodejní cena – použije se cena z objednávek")
+        poplatek = parse_castka(z["poplatek_ks"])
+        if poplatek is None:
+            if "poplatek_ks" in sloupce_souboru:
+                zmena("poplatek_ks", "", 0, "chybí náklady na kus – počítá se s nulou")
+            poplatek = 0.0
 
         if kod in polozky:
             zmena("sku", f"{kod} (nahrazuje řádek {polozky[kod]['radek']})", "",
                   "kód je v souboru vícekrát – platí poslední záznam")
         polozky[kod] = {"radek": radek, "sku": kod,
                         "nazev": "" if je_prazdne(z["nazev"]) else str(z["nazev"]).strip(),
-                        "skladem": int(skladem), "min_zasoba": int(minimum), "nakupni_cena": nakupni}
+                        "skladem": int(skladem), "min_zasoba": int(minimum), "nakupni_cena": nakupni,
+                        "prodejni_cena": math.nan if prodejni is None else prodejni, "poplatek_ks": poplatek}
 
     df = pd.DataFrame(list(polozky.values()),
-                      columns=["radek", "sku", "nazev", "skladem", "min_zasoba", "nakupni_cena"])
+                      columns=["radek", "sku", "nazev", "skladem", "min_zasoba", "nakupni_cena",
+                               "prodejni_cena", "poplatek_ks"])
     return df.drop(columns="radek").reset_index(drop=True)

@@ -14,6 +14,7 @@ from report_demo import formaty
 from report_demo.generator import vygeneruj_vse
 from report_demo.nacitani import SOUBOR_OBJEDNAVEK, nacti_a_vycisti
 from report_demo.report import UKAZATELE, dostupne_tydny, formatuj_hodnotu, spocitej_report
+from report_demo.sortiment import NASTAVENI, SLOUPEC_NAVRHU, prepocet_slevy
 from report_demo.schvaleni import (DENIK_ODESLANI, STAV_NAVRH, STAV_ODESLANO, nacti_stav, schval_a_odesli,
                                    uloz_navrh, zahod_navrh)
 
@@ -97,15 +98,16 @@ for sloupec, klic in zip(sloupce, ["trzby", "hruba_marze", "provozni_naklady", "
                            if bez_minule else ""))
 
 
-def _tabulka(df: pd.DataFrame, kc=(), procenta=(), zmeny=(), desetiny=()):
+def _tabulka(df: pd.DataFrame, kc=(), procenta=(), zmeny=(), desetiny=(), tydny=()):
     styl = df.style.format({s: formaty.kc for s in kc} | {s: formaty.procento for s in procenta}
                            | {s: (lambda v: formaty.procento(v, znamenko=True)) for s in zmeny}
-                           | {s: (lambda v: formaty.cislo(v, 1)) for s in desetiny})
+                           | {s: (lambda v: formaty.cislo(v, 1)) for s in desetiny}
+                           | {s: formaty.tydny for s in tydny})
     st.dataframe(styl, hide_index=True, width="stretch")
 
 
 zalozky = st.tabs(["Tržby po dnech", "Top produkty", "Zboží k doobjednání", "Nezvyklé výkyvy",
-                   "Náklady", "Co jsme v datech opravili"])
+                   "Náklady", "Co jsme v datech opravili", "Co se prodává nejvíc a nejméně"])
 with zalozky[0]:
     graf = report.denni_trzby.assign(Den=[formaty.datum_kratce(d) for d in report.denni_trzby["Den"]])
     graf["Výkyv"] = graf["Den"].isin(report.vykyvy["Kdy"])
@@ -153,6 +155,43 @@ with zalozky[5]:
     _tabulka(report.log_souhrn)
     with st.expander("Zobrazit všechny úpravy po řádcích"):
         st.dataframe(report.log_detail, hide_index=True, width="stretch")
+
+with zalozky[6]:
+    sortiment = report.sortiment
+    st.caption(sortiment.poznamky[0])
+    st.markdown("**Nejprodávanější zboží**")
+    _tabulka(sortiment.nejprodavanejsi, kc=["Tržby"], desetiny=["Prodej za týden (ks)"])
+    st.markdown("**Pomalu se točící zboží**")
+    if sortiment.pomale.empty:
+        st.write("Žádné zboží se netočí pomalu.")
+    else:
+        _tabulka(sortiment.pomale, kc=["Běžná cena", "Zisk na kus"], procenta=["Marže", "Prostor pro slevu"],
+                 desetiny=["Prodej za týden (ks)"], tydny=["Zásoba vydrží (týdnů)"])
+    for veta in sortiment.poznamky[1:]:
+        st.caption(veta)
+
+    st.markdown("**Kalkulačka slevy**")
+    prehled = sortiment.prehled.dropna(subset=["Běžná cena"]).set_index("Kód")
+    vychozi = sortiment.pomale["Kód"].iloc[0] if not sortiment.pomale.empty else prehled.index[0]
+    produkt = st.selectbox("Produkt", list(prehled.index), index=list(prehled.index).index(vychozi),
+                           format_func=lambda kod: prehled.loc[kod, "Produkt"])
+    polozka = prehled.loc[produkt]
+    sleva = st.slider("Sleva %", min_value=0, max_value=70, value=0, step=1)
+    vysledek = prepocet_slevy(polozka["Běžná cena"], polozka["Nákupní cena"], polozka["Náklady na kus"], sleva / 100)
+    puvodni = prepocet_slevy(polozka["Běžná cena"], polozka["Nákupní cena"], polozka["Náklady na kus"], 0)
+    k1, k2, k3 = st.columns(3)
+    k1.metric("Nová cena", formaty.kc(vysledek["nova_cena"], 2),
+              delta=f"-{formaty.kc(polozka['Běžná cena'] - vysledek['nova_cena'], 2)}" if sleva else None,
+              delta_color="off")
+    k2.metric("Zisk na kus", formaty.kc(vysledek["zisk_na_kus"], 2),
+              delta=formaty.kc_znamenko(vysledek["zisk_na_kus"] - puvodni["zisk_na_kus"], 2) if sleva else None)
+    k3.metric("Marže", formaty.procento(vysledek["marze"]))
+    st.caption(f"Prostor pro slevu u tohoto produktu: {formaty.procento(polozka['Prostor pro slevu'])} "
+               "(nejvyšší sleva, při které produkt ještě neprodělává). Počítá se s nákupní cenou "
+               f"{formaty.kc(polozka['Nákupní cena'], 2)}, náklady na kus {formaty.kc(polozka['Náklady na kus'], 2)} "
+               f"a poplatkem za platbu {formaty.procento(NASTAVENI['platebni_poplatek'])} z ceny.")
+    if vysledek["ve_ztrate"]:
+        st.error("Při této slevě by se produkt prodával se ztrátou.")
 
 # ------------------------------------------------------------ soubory
 st.markdown("#### Soubory návrhu")

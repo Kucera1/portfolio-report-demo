@@ -37,7 +37,7 @@ Skutečné odesílání, přihlašování a role, DPH, slevy a vratky. Prahy pro
 
 ## Jak postupuji
 
-Používám AI nástroje, ale zadání, návrh, kontrolu a testování dělám sám. Ukázka má 30 automatických testů a kód je veřejně na GitHubu: [portfolio-report-demo](https://github.com/Kucera1/portfolio-report-demo).
+Používám AI nástroje, ale zadání, návrh, kontrolu a testování dělám sám. Ukázka má 40 automatických testů a kód je veřejně na GitHubu: [portfolio-report-demo](https://github.com/Kucera1/portfolio-report-demo).
 
 **Jak to děláte u vás?** Napište mi, jak dnes sestavujete týdenní nebo měsíční přehled, a řeknu vám, jestli a za kolik to půjde zautomatizovat.
 
