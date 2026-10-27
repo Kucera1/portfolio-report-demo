@@ -22,6 +22,16 @@ V týdnu 41/2026 klesl provozní zisk o 64 %. Při pohledu na samotné číslo b
 
 Report také upozornil na den s výpadkem e-shopu, na velkou firemní objednávku a na čtyři položky, které je potřeba doobjednat.
 
+## Co se prodává nejvíc a nejméně
+
+Majitele nezajímá jen to, co se prodává dobře. Stejně důležité je zboží, které leží na skladě a blokuje peníze.
+
+Report proto ukáže nejprodávanější zboží i zboží, které se točí pomalu: kolik ho je na skladě, na kolik týdnů zásoba vystačí, jakou má marži po poplatcích a jaký je prostor pro slevu, tedy nejvyšší sleva, při které se produkt ještě neprodělá. Prostor pro slevu je spočítaný fakt, ne doporučení.
+
+K pomalu se točícímu zboží report přidá slovní návrh „zvaž slevu“, „zvaž vyřazení“ nebo „zvaž balíček“, vždy s krátkým vysvětlením, proč. Návrhy neobsahují žádná procenta a rozhoduje o nich majitel. V panelu je navíc kalkulačka: u vybraného produktu nastavíte slevu a hned vidíte novou cenu, marži a zisk na kus.
+
+V ukázkových datech má Keňa AA 250 g na skladě 900 ks, zásoba vydrží 23,2 týdne a marže je 41 %, proto report navrhuje zvážit slevu. Kávový sirup se téměř neprodává a má nízkou marži (11 %), proto navrhuje zvážit vyřazení. Jde o vymyšlená data fiktivní firmy.
+
 ## Jak by to vypadalo u skutečného klienta
 
 1. Na jeho datech pustíme report několik týdnů souběžně s ručním postupem a porovnáme čísla.
