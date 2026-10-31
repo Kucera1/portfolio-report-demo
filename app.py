@@ -14,7 +14,7 @@ from report_demo import formaty
 from report_demo.generator import vygeneruj_vse
 from report_demo.nacitani import SOUBOR_OBJEDNAVEK, nacti_a_vycisti
 from report_demo.report import UKAZATELE, dostupne_tydny, formatuj_hodnotu, spocitej_report
-from report_demo.sortiment import NASTAVENI, SLOUPEC_NAVRHU, prepocet_slevy
+from report_demo.sortiment import NASTAVENI, max_sleva_pri_cilove_marzi, prepocet_slevy, prostor_pro_slevu
 from report_demo.schvaleni import (DENIK_ODESLANI, STAV_NAVRH, STAV_ODESLANO, nacti_stav, schval_a_odesli,
                                    uloz_navrh, zahod_navrh)
 
@@ -177,21 +177,69 @@ with zalozky[6]:
                            format_func=lambda kod: prehled.loc[kod, "Produkt"])
     polozka = prehled.loc[produkt]
     sleva = st.slider("Sleva %", min_value=0, max_value=70, value=0, step=1)
-    vysledek = prepocet_slevy(polozka["Běžná cena"], polozka["Nákupní cena"], polozka["Náklady na kus"], sleva / 100)
-    puvodni = prepocet_slevy(polozka["Běžná cena"], polozka["Nákupní cena"], polozka["Náklady na kus"], 0)
+
+    with st.expander("Náklady e-shopu (doprava, reklama, provize, vratky, DPH, cílová marže)"):
+        st.caption("Výchozí hodnoty 0 znamenají, že se položka nepočítá. Ceny v ukázkových datech jsou bez DPH.")
+        n1, n2 = st.columns(2)
+        doprava = n1.number_input("Doprava hrazená e-shopem (Kč na objednávku)", min_value=0.0, step=10.0,
+                                  value=float(NASTAVENI["doprava_na_objednavku"]))
+        marketing = n2.number_input("Marketing a reklama (Kč na objednávku)", min_value=0.0, step=10.0,
+                                    value=float(NASTAVENI["marketing_na_objednavku"]))
+        kusu = n1.number_input("Průměrný počet kusů v objednávce", min_value=1.0, step=0.1,
+                               value=float(NASTAVENI["kusu_v_objednavce"]))
+        platba = n2.number_input("Poplatek za platbu (% z ceny)", min_value=0.0, max_value=100.0, step=0.1,
+                                 value=NASTAVENI["platebni_poplatek"] * 100)
+        provize = n1.number_input("Provize marketplace nebo srovnávače (% z ceny)", min_value=0.0, max_value=100.0,
+                                  step=0.5, value=NASTAVENI["provize"] * 100)
+        vratnost = n2.number_input("Vratnost (% objednávek)", min_value=0.0, max_value=100.0, step=0.5,
+                                   value=NASTAVENI["vratnost"] * 100)
+        vratka = n1.number_input("Náklad na jednu vratku (Kč)", min_value=0.0, step=10.0,
+                                 value=float(NASTAVENI["naklad_na_vratku"]))
+        cilova = n2.number_input("Cílová marže (% z ceny bez DPH)", min_value=0.0, max_value=99.0, step=1.0,
+                                 value=NASTAVENI["cilova_marze"] * 100)
+        platce = n1.checkbox("E-shop je plátce DPH", value=NASTAVENI["platce_dph"])
+        s_dph = n2.checkbox("Ceny jsou včetně DPH", value=NASTAVENI["ceny_s_dph"])
+        sazba = n1.selectbox("Sazba DPH", [21, 12], index=0 if NASTAVENI["sazba_dph"] == 0.21 else 1,
+                             format_func=lambda v: f"{v} %")
+    nastaveni = NASTAVENI | {
+        "doprava_na_objednavku": doprava, "marketing_na_objednavku": marketing, "kusu_v_objednavce": kusu,
+        "platebni_poplatek": platba / 100, "provize": provize / 100, "vratnost": vratnost / 100,
+        "naklad_na_vratku": vratka, "cilova_marze": cilova / 100, "platce_dph": platce, "ceny_s_dph": s_dph,
+        "sazba_dph": sazba / 100,
+    }
+    cena, nakup, na_kus = polozka["Běžná cena"], polozka["Nákupní cena"], polozka["Náklady na kus"]
+    vysledek = prepocet_slevy(cena, nakup, na_kus, sleva / 100, nastaveni=nastaveni)
+    puvodni = prepocet_slevy(cena, nakup, na_kus, 0, nastaveni=nastaveni)
     k1, k2, k3 = st.columns(3)
     k1.metric("Nová cena", formaty.kc(vysledek["nova_cena"], 2),
-              delta=f"-{formaty.kc(polozka['Běžná cena'] - vysledek['nova_cena'], 2)}" if sleva else None,
+              delta=f"-{formaty.kc(cena - vysledek['nova_cena'], 2)}" if sleva else None,
               delta_color="off")
     k2.metric("Zisk na kus", formaty.kc(vysledek["zisk_na_kus"], 2),
               delta=formaty.kc_znamenko(vysledek["zisk_na_kus"] - puvodni["zisk_na_kus"], 2) if sleva else None)
     k3.metric("Marže", formaty.procento(vysledek["marze"]))
-    st.caption(f"Prostor pro slevu u tohoto produktu: {formaty.procento(polozka['Prostor pro slevu'])} "
-               "(nejvyšší sleva, při které produkt ještě neprodělává). Počítá se s nákupní cenou "
-               f"{formaty.kc(polozka['Nákupní cena'], 2)}, náklady na kus {formaty.kc(polozka['Náklady na kus'], 2)} "
-               f"a poplatkem za platbu {formaty.procento(NASTAVENI['platebni_poplatek'])} z ceny.")
     if vysledek["ve_ztrate"]:
         st.error("Při této slevě by se produkt prodával se ztrátou.")
+
+    prostor = prostor_pro_slevu(cena, nakup, na_kus, nastaveni=nastaveni)
+    cilova_sleva = max_sleva_pri_cilove_marzi(cena, nakup, na_kus, nastaveni)
+    h1, h2 = st.columns(2)
+    h1.metric("Hranice nulového zisku", f"sleva {formaty.procento(prostor)}",
+              help="Nejvyšší sleva, při které produkt ještě neprodělává.")
+    h1.caption(f"Cena nejméně {formaty.kc(cena * (1 - prostor), 2)}")
+    if cilova_sleva["hlaska"]:
+        h2.metric(f"Maximální sleva při cílové marži {formaty.procento(nastaveni['cilova_marze'], 0)}", "–")
+        h2.warning(cilova_sleva["hlaska"])
+    else:
+        h2.metric(f"Maximální sleva při cílové marži {formaty.procento(nastaveni['cilova_marze'], 0)}",
+                  f"sleva {formaty.procento(cilova_sleva['sleva'])}")
+        h2.caption(f"Cena nejméně {formaty.kc(cilova_sleva['nejnizsi_cena'], 2)}")
+
+    st.markdown("Rozpis ceny po slevě (na jeden kus)")
+    st.dataframe(vysledek["rozpis"].style.format({"Kč na kus": lambda v: formaty.kc(v, 2)}),
+                 hide_index=True, width="stretch")
+    st.caption("Výsledek je orientační. Nezahrnuje fixní náklady (nájem, mzdy, software). "
+               "U akční ceny hlídejte pravidlo o nejnižší ceně: sleva se počítá z nejnižší ceny "
+               "za posledních 30 dní před slevou.")
 
 # ------------------------------------------------------------ soubory
 st.markdown("#### Soubory návrhu")

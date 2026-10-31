@@ -10,8 +10,9 @@ from report_demo.cisteni import LogZmen, vycisti_sklad
 from report_demo.generator import vygeneruj_vse
 from report_demo.nacitani import nacti_a_vycisti
 from report_demo.sortiment import (NASTAVENI, NAVRH_BALICEK, NAVRH_SLEVA, NAVRH_VYRAZENI, SLOUPEC_NAVRHU,
-                                   analyzuj_sortiment, navrh, partner_balicku, prepocet_slevy, prostor_pro_slevu,
-                                   rychlost_prodeje, zasoba_na_tydny, zisk_na_kus)
+                                   analyzuj_sortiment, max_sleva_pri_cilove_marzi, navrh, partner_balicku,
+                                   prepocet_slevy, prostor_pro_slevu, rychlost_prodeje, zasoba_na_tydny,
+                                   zisk_na_kus)
 
 KE_DNI = date(2026, 10, 11)
 
@@ -149,3 +150,87 @@ def test_sortiment_na_syntetickych_datech(tmp_path):
     assert navrhy["KAV-KEN-250"] == NAVRH_SLEVA
     assert "KAV-ETI-250" in set(vysledek.nejprodavanejsi["Kód"])
     assert (vysledek.prehled["Prostor pro slevu"] >= 0).all()
+
+
+# ------------------------------------------------------------------ další náklady e-shopu
+
+KRABICKA = (99, 40, 6)          # běžná cena, nákupní cena, balení a vyřízení (ukázková data)
+
+
+def _s(**zmeny):
+    return NASTAVENI | zmeny
+
+
+def test_vychozi_naklady_davaji_puvodni_cisla():
+    vysledek = prepocet_slevy(*KRABICKA, 0.13)
+    assert round(vysledek["nova_cena"], 2) == 86.13
+    assert round(vysledek["zisk_na_kus"], 2) == 38.84
+    assert round(vysledek["marze"] * 100, 1) == 45.1
+    assert round(prostor_pro_slevu(*KRABICKA) * 100, 1) == 52.8
+    rozpis = vysledek["rozpis"].set_index("Položka")["Kč na kus"]
+    assert rozpis["Zisk na kus"] == pytest.approx(vysledek["zisk_na_kus"])
+    assert rozpis.drop("Zisk na kus").sum() == pytest.approx(vysledek["zisk_na_kus"])
+
+
+def test_kazdy_novy_naklad_snizi_zisk_i_prostor_pro_slevu():
+    zaklad = zisk_na_kus(*KRABICKA)
+    prostor = prostor_pro_slevu(*KRABICKA)
+    for zmena in [{"doprava_na_objednavku": 30.0}, {"marketing_na_objednavku": 20.0}, {"provize": 0.10},
+                  {"vratnost": 0.05, "naklad_na_vratku": 80.0}, {"platce_dph": True, "ceny_s_dph": True}]:
+        n = _s(**zmena)
+        assert zisk_na_kus(*KRABICKA, nastaveni=n) < zaklad, zmena
+        assert prostor_pro_slevu(*KRABICKA, nastaveni=n) < prostor, zmena
+
+
+def test_doprava_a_reklama_se_deli_poctem_kusu_v_objednavce():
+    jeden = _s(doprava_na_objednavku=100.0, marketing_na_objednavku=20.0, kusu_v_objednavce=1)
+    ctyri = _s(doprava_na_objednavku=100.0, marketing_na_objednavku=20.0, kusu_v_objednavce=4)
+    zaklad = zisk_na_kus(*KRABICKA)
+    assert zisk_na_kus(*KRABICKA, nastaveni=jeden) == pytest.approx(zaklad - 120)
+    assert zisk_na_kus(*KRABICKA, nastaveni=ctyri) == pytest.approx(zaklad - 30)
+    with pytest.raises(ValueError):
+        zisk_na_kus(*KRABICKA, nastaveni=_s(kusu_v_objednavce=0))
+
+
+def test_vratky_a_provize():
+    zaklad = zisk_na_kus(*KRABICKA)
+    assert zisk_na_kus(*KRABICKA, nastaveni=_s(vratnost=0.10, naklad_na_vratku=150.0)) == pytest.approx(zaklad - 15)
+    assert zisk_na_kus(*KRABICKA, nastaveni=_s(provize=0.10)) == pytest.approx(zaklad - 9.9)
+
+
+def test_dph_u_platce_a_neplatce():
+    bez = _s(platebni_poplatek=0.0)
+    # plátce s cenami včetně DPH: ze 121 Kč zůstane 100 Kč, marže se počítá z ceny bez DPH
+    platce = prepocet_slevy(121, 50, 0, 0, nastaveni=bez | {"platce_dph": True, "ceny_s_dph": True})
+    assert platce["zisk_na_kus"] == pytest.approx(50)
+    assert platce["marze"] == pytest.approx(0.5)
+    rozpis = platce["rozpis"].set_index("Položka")["Kč na kus"]
+    assert rozpis["DPH (odvede se státu)"] == pytest.approx(-21)
+    # neplátce DPH neodvádí; plátce s cenami bez DPH také nic neodečítá
+    assert zisk_na_kus(121, 50, 0, nastaveni=bez | {"platce_dph": False, "ceny_s_dph": True}) == pytest.approx(71)
+    assert zisk_na_kus(121, 50, 0, nastaveni=bez | {"platce_dph": True, "ceny_s_dph": False}) == pytest.approx(71)
+    snizena = _s(platebni_poplatek=0.0, platce_dph=True, ceny_s_dph=True, sazba_dph=0.12)
+    assert zisk_na_kus(112, 50, 0, nastaveni=snizena) == pytest.approx(50)
+
+
+def test_maximalni_sleva_pri_cilove_marzi():
+    n = _s(platebni_poplatek=0.0, cilova_marze=0.20)
+    vysledek = max_sleva_pri_cilove_marzi(100, 40, 0, n)
+    assert vysledek["nejnizsi_cena"] == pytest.approx(50)            # 40 / (1 − 0,2)
+    assert vysledek["sleva"] == pytest.approx(0.5) and vysledek["hlaska"] is None
+    assert prepocet_slevy(100, 40, 0, vysledek["sleva"], nastaveni=n)["marze"] == pytest.approx(0.20)
+    # s nulovou cílovou marží je to přesně hranice nulového zisku
+    assert max_sleva_pri_cilove_marzi(*KRABICKA, NASTAVENI)["sleva"] == pytest.approx(prostor_pro_slevu(*KRABICKA))
+    # u plátce s cenami včetně DPH platí cílová marže pro cenu bez DPH
+    dph = n | {"platce_dph": True, "ceny_s_dph": True}
+    sleva_dph = max_sleva_pri_cilove_marzi(121, 40, 0, dph)["sleva"]
+    assert prepocet_slevy(121, 40, 0, sleva_dph, nastaveni=dph)["marze"] == pytest.approx(0.20)
+
+
+def test_cilova_marze_nedosazitelna():
+    nikdy = max_sleva_pri_cilove_marzi(100, 40, 0, _s(provize=0.15, cilova_marze=0.90))
+    assert math.isnan(nikdy["sleva"]) and "nedosažitelná" in nikdy["hlaska"]
+    drahe = max_sleva_pri_cilove_marzi(100, 90, 0, _s(platebni_poplatek=0.0, cilova_marze=0.20))
+    assert math.isnan(drahe["sleva"]) and "ani bez slevy" in drahe["hlaska"]
+    assert drahe["nejnizsi_cena"] == pytest.approx(112.5)
+    assert math.isnan(max_sleva_pri_cilove_marzi(math.nan, 40, 0)["sleva"])

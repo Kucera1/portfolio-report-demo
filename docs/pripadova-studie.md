@@ -28,7 +28,7 @@ Majitele nezajímá jen to, co se prodává dobře. Stejně důležité je zbož
 
 Report proto ukáže nejprodávanější zboží i zboží, které se točí pomalu: kolik ho je na skladě, na kolik týdnů zásoba vystačí, jakou má marži po poplatcích a jaký je prostor pro slevu, tedy nejvyšší sleva, při které se produkt ještě neprodělá. Prostor pro slevu je spočítaný fakt, ne doporučení.
 
-K pomalu se točícímu zboží report přidá slovní návrh „zvaž slevu“, „zvaž vyřazení“ nebo „zvaž balíček“, vždy s krátkým vysvětlením, proč. Návrhy neobsahují žádná procenta a rozhoduje o nich majitel. V panelu je navíc kalkulačka: u vybraného produktu nastavíte slevu a hned vidíte novou cenu, marži a zisk na kus.
+K pomalu se točícímu zboží report přidá slovní návrh „zvaž slevu“, „zvaž vyřazení“ nebo „zvaž balíček“, vždy s krátkým vysvětlením, proč. Návrhy neobsahují žádná procenta a rozhoduje o nich majitel. V panelu je navíc orientační kalkulačka: u vybraného produktu nastavíte slevu a hned vidíte novou cenu, marži, zisk na kus a rozpis nákladů. Umí započítat i dopravu, reklamu, provize, vratky a DPH a ukáže hranici nulového zisku i maximální slevu pro zvolenou cílovou marži. Fixní náklady jako nájem nebo mzdy nezahrnuje.
 
 V ukázkových datech má Keňa AA 250 g na skladě 900 ks, zásoba vydrží 23,2 týdne a marže je 41 %, proto report navrhuje zvážit slevu. Kávový sirup se téměř neprodává a má nízkou marži (11 %), proto navrhuje zvážit vyřazení. Jde o vymyšlená data fiktivní firmy.
 
@@ -43,11 +43,11 @@ Data zůstávají u klienta.
 
 ## Co ukázka neřeší
 
-Skutečné odesílání, přihlašování a role, DPH, slevy a vratky. Prahy pro neobvyklé výkyvy jsou jednoduchá pravidla, která je potřeba doladit na datech konkrétní firmy.
+Skutečné odesílání, přihlašování a role, DPH, slevy a vratky v samotném reportu (kalkulačka slevy je zahrne jen orientačně). Prahy pro neobvyklé výkyvy jsou jednoduchá pravidla, která je potřeba doladit na datech konkrétní firmy.
 
 ## Jak postupuji
 
-Používám AI nástroje, ale zadání, návrh, kontrolu a testování dělám sám. Ukázka má 40 automatických testů a kód je veřejně na GitHubu: [portfolio-report-demo](https://github.com/Kucera1/portfolio-report-demo).
+Používám AI nástroje, ale zadání, návrh, kontrolu a testování dělám sám. Ukázka má 47 automatických testů a kód je veřejně na GitHubu: [portfolio-report-demo](https://github.com/Kucera1/portfolio-report-demo).
 
 **Jak to děláte u vás?** Napište mi, jak dnes sestavujete týdenní nebo měsíční přehled, a řeknu vám, jestli a za kolik to půjde zautomatizovat.
 

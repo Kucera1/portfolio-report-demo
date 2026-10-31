@@ -23,9 +23,9 @@ Případová studie: [docs/pripadova-studie.md](docs/pripadova-studie.md).
 | Report | Tržby, nákupní cena zboží, hrubá marže, provozní náklady (zvlášť pravidelné měsíční platby – mzdy, nájem, energie, software) a zisk i zisk bez měsíčních plateb (proti minulému týdnu), rozklad změny zisku (kolik udělaly měsíční platby, marketing a ostatní), top 5 produktů, zboží k doobjednání (s doporučeným množstvím), nezvyklé výkyvy tržeb a nákladů a pár vět „hlavních zjištění“. |
 | Schválení | Report se uloží jako **návrh**. Teprve tlačítko **Schválit a odeslat** ho „odešle“ – v ukázce se jen zkopíruje do složky `odeslano/` spolu s textem zprávy a záznamem do deníku. Návrh jde i zahodit. Odeslat lze jen jednou. |
 | Export | Excel (10 listů, česká čísla a měna) a PDF (A4, graf tržeb po dnech, tabulky). |
-| Testy | 40 testů (pytest) pro čištění, výpočty, schvalování a exporty. |
+| Testy | 47 testů (pytest) pro čištění, výpočty, schvalování a exporty. |
 
-- **Co se prodává nejvíc a nejméně:** nejprodávanější a pomalu se točící zboží, na kolik týdnů vydrží zásoba, prostor pro slevu a doporučení (zvaž slevu, vyřazení nebo balíček) – rozhoduje majitel; v panelu i kalkulačka slevy.
+- **Co se prodává nejvíc a nejméně:** nejprodávanější a pomalu se točící zboží, na kolik týdnů vydrží zásoba, prostor pro slevu a doporučení (zvaž slevu, vyřazení nebo balíček) – rozhoduje majitel; v panelu i orientační kalkulačka slevy (umí započítat dopravu, reklamu, provize, vratky a DPH a ukáže hranici nulového zisku i maximální slevu pro zvolenou cílovou marži).
 
 ## Jak spustit (Windows)
 
@@ -65,7 +65,7 @@ Na macOS/Linuxu místo `py -3.14` použijte `python3` a místo `.venv\Scripts\ac
 
 - **Skutečné odesílání** – v ukázce se soubory jen zkopírují do složky.
 - **Přihlášení a role** – kdo smí schvalovat, není řešeno; panel je určen pro jeden počítač.
-- **DPH, slevy, vratky, doprava účtovaná zákazníkovi** – vše se bere jako bez DPH, vratky se neřeší.
+- **DPH, slevy, vratky, doprava účtovaná zákazníkovi** – v reportu se vše bere jako bez DPH a vratky se neřeší; kalkulačka slevy je umí zahrnout jen orientačně a nepočítá s fixními náklady.
 - **Historie skladu** – sklad je jeden snímek (poslední export); u starších týdnů se tedy nepočítá stav k tehdejšímu dni.
 - **Výkyvy** jsou jednoduchá pravidla (např. tržba dne alespoň dvojnásobná nebo pod 40 % proti mediánu stejného dne
   v týdnu za 4 týdny). Nejde o statistický model; prahy je potřeba doladit na datech konkrétní firmy.
@@ -135,8 +135,8 @@ Case study (in Czech): [docs/pripadova-studie.md](docs/pripadova-studie.md).
   copies files to `odeslano/` with the message text and a log entry). A draft can be discarded; it can be sent
   only once.
 - **Exports:** Excel (10 sheets, Czech number formats) and PDF (A4, daily revenue chart, tables).
-- **Tests:** 40 pytest tests for cleaning, calculations, approval and exports.
-- **Best and slow sellers:** best-selling and slow-moving products, how many weeks the stock will last, discount headroom and rule-based suggestions without numbers (consider a discount, removal or a bundle) – the owner decides; the panel also has a discount calculator.
+- **Tests:** 47 pytest tests for cleaning, calculations, approval and exports.
+- **Best and slow sellers:** best-selling and slow-moving products, how many weeks the stock will last, discount headroom and rule-based suggestions without numbers (consider a discount, removal or a bundle) – the owner decides; the panel also has an indicative discount calculator (it can include shipping, advertising, commissions, returns and VAT, and shows the break-even discount and the maximum discount for a chosen target margin).
 
 The user interface and outputs are in Czech, because the target customer is a Czech small business.
 
@@ -163,7 +163,8 @@ order, an expensive ad campaign). Orders contain no customer data.
 
 ## Limitations
 
-No real sending, no user login or roles, no VAT/discount/returns handling, a single stock snapshot,
+No real sending, no user login or roles, no VAT/discount/returns handling in the report itself (the discount
+calculator covers them only indicatively, without fixed costs), a single stock snapshot,
 simple threshold rules for unusual swings (to be tuned on real data), similarity-based typo fixing can
 be wrong for very similar codes (hence the log), dates like `05/08/2026` are read day-first, no scheduling.
 
