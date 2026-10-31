@@ -235,8 +235,10 @@ with zalozky[6]:
         h2.caption(f"Cena nejméně {formaty.kc(cilova_sleva['nejnizsi_cena'], 2)}")
 
     st.markdown("Rozpis ceny po slevě (na jeden kus)")
+    # Tabulka jen tak široká, jak potřebuje obsah: částky jsou hned vedle popisků a nevypadnou z obrazu.
     st.dataframe(vysledek["rozpis"].style.format({"Kč na kus": lambda v: formaty.kc(v, 2)}),
-                 hide_index=True, width="stretch")
+                 hide_index=True, width="content",
+                 column_config={"Kč na kus": st.column_config.TextColumn("Kč na kus", alignment="right")})
     st.caption("Výsledek je orientační. Nezahrnuje fixní náklady (nájem, mzdy, software). "
                "U akční ceny hlídejte pravidlo o nejnižší ceně: sleva se počítá z nejnižší ceny "
                "za posledních 30 dní před slevou.")
